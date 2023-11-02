@@ -1,6 +1,9 @@
 package cl.ucn.disc.as.services;
 import cl.ucn.disc.as.exceptions.SistemaException;
 import cl.ucn.disc.as.model.*;
+import com.github.javafaker.Faker;
+import com.github.javafaker.service.FakeValuesService;
+import com.github.javafaker.service.RandomService;
 import io.ebean.Database;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.persistence.PersistenceException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 public class SistemaImpl implements Sistema {
@@ -52,15 +56,6 @@ public class SistemaImpl implements Sistema {
             this.database.save(departamento);
             edificio.getDepartamentos().add(departamento);
             log.debug("Edificio afer db: {}", edificio);
-            // Accede a la lista de departamentos del edificio
-           List<Departamento> listaDeDepartamentos = edificio.getDepartamentos();
-            for (Departamento departamentoLista : listaDeDepartamentos) {
-                System.out.println("este es un departamento");
-                System.out.println("Número de Id: " + departamentoLista.getId());
-                System.out.println("Piso: " + departamentoLista.getPiso());
-                // Aquí puedes mostrar otros atributos del departamento según sea necesario.
-                System.out.println("-----------");
-            }
         } catch (PersistenceException ex) {
             log.error("Error", ex);
             throw new SistemaException("Error al agregar un departamento", ex);
@@ -138,6 +133,15 @@ public class SistemaImpl implements Sistema {
     public List<Persona> getPersonas() {
         return this.database.find(Persona.class).findList();
     }
+    /**
+     * The getPersona
+     * Obtiene la Persona
+     */
+    @Override
+    public Persona getPersona(String rut) {
+        return (Persona) this.database.find(Persona.class).where().eq("rut", rut).findList();
+    }
+
 
     /**
      * The getPagos
@@ -166,4 +170,37 @@ public class SistemaImpl implements Sistema {
         return this.database.find(Departamento.class).findList();
     }
 
+    /**
+     *
+     * Llenar BD con datos semi reales
+     */
+    @Override
+    public void populate(){
+        // build the persona
+        Persona persona = Persona.builder()
+                .rut("20347156-4")
+                .nombre("Allan")
+                .apellidos("Cortes Cortes")
+                .email("allan.cortes@alumnos.ucn.cl")
+                .telefono("56912231223")
+                .build();
+        this.database.save(persona);
+
+        // the faker
+        Locale locale = new Locale("es-Cl");
+        FakeValuesService fvs = new FakeValuesService(locale, new RandomService());
+        Faker faker = new Faker(locale);
+
+        //faker
+        for(int i = 0; i <1000; i++){
+            Persona personafake = Persona.builder()
+                    .rut(fvs.bothify("########-#"))
+                    .nombre(faker.name().firstName())
+                    .apellidos(faker.name().lastName())
+                    .email(fvs.bothify("????##@gmail.com"))
+                    .telefono(fvs.bothify("+569########"))
+                    .build();
+            this.database.save(personafake);
+        }
+    }
 }

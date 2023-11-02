@@ -55,7 +55,7 @@ public class Edificio extends BaseModel{
     public static class EdificioBuilder{
 
         /**
-         * @return The Persona
+         * @return The Edificio
          */
         public Edificio build(){
 

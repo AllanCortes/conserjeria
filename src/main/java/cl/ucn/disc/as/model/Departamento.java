@@ -44,7 +44,7 @@ public class Departamento extends BaseModel {
     public static class DepartamentoBuilder{
 
         /**
-         * @return The Persona
+         * @return The Departamento
          */
         public Departamento build(){
 

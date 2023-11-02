@@ -31,10 +31,13 @@ public interface Sistema {
     List<Contrato> getContratos();
 
     List<Persona> getPersonas();
+    Persona getPersona(String rut);
 
     List<Pago> getPagos(String rut);
 
     List<Edificio> getEdificios();
 
     List<Departamento> getDepartamentos();
+
+    void populate();
 }

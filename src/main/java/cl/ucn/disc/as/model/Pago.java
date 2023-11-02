@@ -54,7 +54,7 @@ public class Pago extends BaseModel{
     public static class PagoBuilder{
 
         /**
-         * @return The Persona
+         * @return The Pago
          */
         public Pago build(){
 
