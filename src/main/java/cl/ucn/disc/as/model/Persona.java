@@ -6,6 +6,7 @@ package cl.ucn.disc.as.model;
 
 import cl.ucn.disc.as.model.exceptions.IllegalDomainException;
 import cl.ucn.disc.as.utils.ValidationUtils;
+import io.ebean.annotation.Cache;
 import io.ebean.annotation.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ import java.util.List;
  *
  * @author Allan Cortes Cortes.
  */
+@Cache(enableQueryCache = true,nearCache = true)
 @Getter
 @ToString(callSuper = true)
 @AllArgsConstructor

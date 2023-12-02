@@ -3,8 +3,8 @@ ebean:
   dumpMetricsOnShutdown: true
   dumpMetricsOptions: loc,sql,hash
   ddl:
-    generate: false
-    run: false
+    generate: true
+    run: true
   debug:
     sql: true
     lazyload: true
