@@ -15,37 +15,19 @@ buildscript {
 
         protobufPluginVersion = '0.9.4'
         versionPluginVersion = '0.50.0'
+
     }
 }
+
 plugins {
     id 'idea'
     id 'java'
-    id('io.ebean') version '13.22.0'
-    id('com.github.ben-manes.versions') version '0.49.0'
+    id('io.ebean') version "${ebeanVersion}"
+    id('com.github.ben-manes.versions') version "${versionPluginVersion}"
     id('com.google.protobuf') version "${protobufPluginVersion}"
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
-}
-/ -------------------------------------------/
-
-shadowJar {
-    archiveClassifier.set('')
-    manifest {
-        attributes 'Main-Class': 'Main'
-    }
-    mergeServiceFiles {
-        include 'META-INF/services/io.grpc.LoadBalancerProvider'
-    }
-}
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'Main'
-        )
-    }
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-/---------------------------------/
-archivesBaseName = 'conserjeria'
 group = 'cl.ucn.disc.as'
 version = '0.0.5'
 
@@ -67,7 +49,7 @@ protobuf {
         }
     }
     generateProtoTasks {
-        all()*.plugins {
+        all()*.plugins{
             grpc {}
         }
     }
@@ -77,8 +59,6 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }
 
 compileJava {
@@ -89,53 +69,56 @@ compileJava {
 dependencies {
     implementation 'mysql:mysql-connector-java:8.0.27'
     // junit
-    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation platform('org.junit:junit-bom:5.10.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
     // lombok
-    testCompileOnly 'org.projectlombok:lombok:1.18.28'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
-
-    // webean
-    testImplementation 'io.ebean:ebean-test:13.11.0'
-
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // ebean
-    implementation 'io.ebean:ebean:13.11.0'
-    implementation 'io.ebean:ebean-ddl-generator:13.21.0'
-    annotationProcessor 'io.ebean:querybean-generator:13.11.0'
+    testImplementation "io.ebean:ebean-test:${ebeanVersion}"
+    implementation "io.ebean:ebean-sqlite:${ebeanVersion}"
+
+    // ebean
+    implementation "io.ebean:ebean:${ebeanVersion}"
+    implementation "io.ebean:ebean-ddl-generator:${ebeanVersion}"
+    annotationProcessor "io.ebean:querybean-generator:${ebeanVersion}"
 
     // database
-    implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
+    implementation "org.xerial:sqlite-jdbc:${sqliteVersion}"
     implementation "org.mariadb.jdbc:mariadb-java-client:3.3.0"
     // implementation 'com.h2database:h2:2.2.220'
 
     // json
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation "com.google.code.gson:gson:${gsonVersion}"
 
     // web: javalin
-    implementation 'io.javalin:javalin:5.6.3'
+    implementation "io.javalin:javalin:${javalinVersion}"
+    //implementation "com.aayushatharva.brotli4j:brorli4j:1.13.0"
+    //implementation "com.nixxcode.jvmbrotli:jvmbrotli:0.2.0"
 
     // lombok
-    compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // logger
-    implementation 'ch.qos.logback:logback-core:1.4.11'
-    implementation 'ch.qos.logback:logback-classic:1.4.11'
+    implementation "ch.qos.logback:logback-core:${logbackVersion}"
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
 
-    //commons-lang3
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.13.0'
+    //commons-long3
+    //https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation "org.apache.commons:commons-lang3:${commonsLangVersion}"
 
     //data faker
-    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation "com.github.javafaker:javafaker:${javaFakerVersion}"
 
-    // gRPC
-    implementation "io.grpc:grpc-netty:${grpcVersion}"
+    //grpc
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
-    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation "javax.annotation:javax.annotation-api:1.3.2"
+
 }
 
 ebean {
@@ -147,10 +130,26 @@ test {
     testLogging.showStandardStreams = true
     testLogging.exceptionFormat = 'full'
 }
-// Inform IntelliJ about the generate code/
+
 idea {
     module {
-        sourceDirs += file ("src/generated/main/java")
-        sourceDirs += file ("src/generated/main/grpc")
+        sourceDirs += file("src/generated/main/java")
+        sourceDirs += file("src/generated/main/grpc")
+    }
+}
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'cl.ucn.disc.as.Main'
+        )
+    }
+}
+shadowJar {
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'cl.ucn.disc.as.Main'
+    }
+    mergeServiceFiles {
+        include 'META-INF/services/io.grpc.LoadBalancerProvider'
     }
 }
