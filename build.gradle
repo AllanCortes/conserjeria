@@ -23,8 +23,29 @@ plugins {
     id('io.ebean') version '13.22.0'
     id('com.github.ben-manes.versions') version '0.49.0'
     id('com.google.protobuf') version "${protobufPluginVersion}"
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+/ -------------------------------------------/
+
+shadowJar {
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+    mergeServiceFiles {
+        include 'META-INF/services/io.grpc.LoadBalancerProvider'
+    }
+}
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'Main'
+        )
+    }
 }
 
+/---------------------------------/
+archivesBaseName = 'conserjeria'
 group = 'cl.ucn.disc.as'
 version = '0.0.5'
 
@@ -32,6 +53,7 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
+
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${protobufVersion}"
@@ -55,6 +77,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 compileJava {
@@ -63,6 +87,7 @@ compileJava {
 }
 
 dependencies {
+    implementation 'mysql:mysql-connector-java:8.0.27'
     // junit
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -74,6 +99,7 @@ dependencies {
     // webean
     testImplementation 'io.ebean:ebean-test:13.11.0'
 
+
     // ebean
     implementation 'io.ebean:ebean:13.11.0'
     implementation 'io.ebean:ebean-ddl-generator:13.21.0'
@@ -81,6 +107,7 @@ dependencies {
 
     // database
     implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
+    implementation "org.mariadb.jdbc:mariadb-java-client:3.3.0"
     // implementation 'com.h2database:h2:2.2.220'
 
     // json
@@ -104,6 +131,7 @@ dependencies {
     implementation 'com.github.javafaker:javafaker:1.0.2'
 
     // gRPC
+    implementation "io.grpc:grpc-netty:${grpcVersion}"
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"

@@ -1,0 +1,29 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb:10.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: conserjeria_passsword
+      MYSQL_DATABASE: conserjeria
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: conserjeria_passsword
+    ports:
+      - "3308:3308"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+  conserjeria:
+    image: conserjeria:latest
+    depends_on:
+      - mariadb
+    ports:
+      - "7071:7070"
+    environment:
+      DB_USERNAME: admin
+      DB_PASSWORD: conserjeria_passsword
+      DB_PLATFORM: mysql
+      DB_DDL_MODE: dropCreate
+      DB_NAME: conserjeria
+      DB_URL: jdbc:mysql://mariadb:3308/conserjeria?useSSL=false&serverTimezone=UTC
+volumes:
+  mariadb_data:
