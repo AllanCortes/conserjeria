@@ -9,7 +9,7 @@ package io.ebean.Database <<extern>> {
     }
 }
 
-package cl.ucn.disc.as.conserjeria.model {
+package cl.ucn.disc.as.model {
 
     class BaseModel <<abstract>> {
         - {static} id: Long
@@ -90,7 +90,7 @@ package cl.ucn.disc.as.conserjeria.model {
 
 }
 
-package cl.ucn.disc.as.conserjeria.services {
+package cl.ucn.disc.as.services {
 
     interface Sistema {
         + add(edificio: Edificio): Edificio
